@@ -5,11 +5,11 @@ import react from '@vitejs/plugin-react'
 export default defineConfig({
   plugins: [react()],
   build: {
-    // Specify the directory where the build files will be placed
-    outDir: 'dist', // This makes sure the output files go into the 'dist' folder
+    outDir: 'dist', // Output directory for build files
   },
   server: {
-    host: '0.0.0.0', // Allows access from any device on the network
-    port: 3000, // Port number (make sure this is correct when running locally)
+    host: '0.0.0.0',
+    port: 3000,
   },
+  base: '/', // Ensure this is set to '/' for root deployment
 })
