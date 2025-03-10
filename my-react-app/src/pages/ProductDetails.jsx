@@ -1,30 +1,13 @@
-import { useState, useEffect } from "react";
+import React from "react";
 import { useParams } from "react-router-dom";
-
-const API_URL = "https://v2.api.noroff.dev/online-shop";
+import { useProduct } from "../hooks/useProduct"; // Import the custom hook
 
 const ProductDetails = ({ addToCart }) => {
-  const { id } = useParams(); // ✅ Get product ID from URL
-  const [product, setProduct] = useState(null);
+  const { id } = useParams();  // Get product ID from URL
+  const { product, loading, error } = useProduct(id);  // Use the custom hook to fetch the product
 
-  // Fetch product details
-  useEffect(() => {
-    const fetchProduct = async () => {
-      try {
-        const response = await fetch(`${API_URL}/${id}`);
-        const json = await response.json();
-        setProduct(json.data);
-      } catch (error) {
-        console.error("Error fetching product details:", error);
-      }
-    };
-
-    fetchProduct();
-  }, [id]);
-
-  if (!product) {
-    return <p className="loading-text">Loading product details...</p>;
-  }
+  if (loading) return <p>Loading product details...</p>;
+  if (error) return <p>Error fetching product details: {error}</p>;
 
   return (
     <div className="product-details-container">
@@ -33,13 +16,20 @@ const ProductDetails = ({ addToCart }) => {
         <img
           src={product.image?.url}
           alt={product.image?.alt || "Product image"}
+          className="product-image"
         />
-        <div>
-          <p>{product.description}</p>
+        <div className="product-info">
+          <p className="product-description">{product.description}</p>
           <p className="price">
-            ${product.discountedPrice} <s>${product.price}</s>
+            <span className="discounted-price">${product.discountedPrice.toFixed(2)}</span>
+            {product.price !== product.discountedPrice && (
+              <>
+                {" "}
+                <s className="original-price">${product.price.toFixed(2)}</s>
+              </>
+            )}
           </p>
-          <p className="rating">Rating: ⭐ {product.rating}</p>
+          <p className="rating">⭐ {product.rating} / 5</p>
 
           {/* Add to Cart Button */}
           <button className="add-cart-btn" onClick={() => addToCart(product)}>

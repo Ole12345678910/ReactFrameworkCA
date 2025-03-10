@@ -2,6 +2,10 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 
 function ProductList({ data, addToCart }) {
+  if (!data || data.length === 0) {
+    return <p className="empty-message">No products available.</p>;
+  }
+
   return (
     <div className="product-list">
       {data.map((product) => {
@@ -11,26 +15,33 @@ function ProductList({ data, addToCart }) {
 
         return (
           <div key={product.id} className="product-card">
-            {/* Wrap the entire card inside the Link */}
             <Link to={`/product/${product.id}`} className="product-link">
-              <img src={product.image.url} alt={product.title} />
-              <h3>{product.title}</h3>
-              <p>{product.description}</p>
+              <img
+                src={product.image?.url}
+                alt={product.image?.alt || product.title}
+                className="product-image"
+              />
+              <h3 className="product-title">{product.title}</h3>
+              <p className="product-description">{product.description}</p>
 
               {/* Display pricing information */}
-              {discount > 0 ? (
-                <p>
-                  <span className="original-price">${product.price}</span>
-                  <span className="discounted-price"> ${product.discountedPrice}</span>
-                  <span className="discount-badge">-{discountPercentage}%</span>
-                </p>
-              ) : (
-                <p className="price">${product.discountedPrice}</p>
-              )}
+              <p className="price">
+                {discount > 0 ? (
+                  <>
+                    <span className="original-price">${product.price.toFixed(2)}</span>
+                    <span className="discounted-price"> ${product.discountedPrice.toFixed(2)}</span>
+                    <span className="discount-badge">-{discountPercentage}%</span>
+                  </>
+                ) : (
+                  <span>${product.discountedPrice.toFixed(2)}</span>
+                )}
+              </p>
             </Link>
 
             {/* Add to Cart button */}
-            <button className='add-cart-btn' onClick={() => addToCart(product)}>Add to Cart</button>
+            <button className="add-cart-btn" onClick={() => addToCart(product)}>
+              Add to Cart
+            </button>
           </div>
         );
       })}

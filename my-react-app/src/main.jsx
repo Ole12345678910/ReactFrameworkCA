@@ -1,13 +1,23 @@
-import React from 'react';
-import ReactDOM from 'react-dom/client';  // Import createRoot from react-dom/client
-import { BrowserRouter as Router } from 'react-router-dom';  // Import the Router here
-import App from './App';
-import './styles/index.css'; // Import the CSS file
+import React from "react";
+import ReactDOM from "react-dom/client"; // Import createRoot from react-dom/client
+import { BrowserRouter as Router } from "react-router-dom"; // Import Router
+import App from "./App";
+import "./styles/index.css"; // Import global styles
 
-// Create a root and render your app
-const root = ReactDOM.createRoot(document.getElementById('root')); // Create the root element
+// Create the root element
+const rootElement = document.getElementById("root");
+
+if (!rootElement) {
+  throw new Error("Root element not found. Ensure you have an element with id='root' in your HTML.");
+}
+
+// Create the root
+const root = ReactDOM.createRoot(rootElement);
+
 root.render(
-  <Router>  {/* Wrap your App component with Router */}
-    <App />
-  </Router>
+  <React.StrictMode>
+    <Router>
+      <App />
+    </Router>
+  </React.StrictMode>
 );

@@ -1,10 +1,15 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { FaTrash } from 'react-icons/fa'; // Import trash icon
+import { FaTrash } from "react-icons/fa"; // Import trash icon
 
 function EditOrderPage({ cart, setCart }) {
   const navigate = useNavigate();
   const [updatedCart, setUpdatedCart] = useState([...cart]);
+
+  // Sync with the original cart if it changes
+  useEffect(() => {
+    setUpdatedCart(cart);
+  }, [cart]);
 
   // Increase quantity
   const increaseQuantity = (id) => {
@@ -46,11 +51,11 @@ function EditOrderPage({ cart, setCart }) {
   return (
     <div className="edit-order-page">
       <h2>Edit Your Order</h2>
-      <div className="cart-items">
-        {updatedCart.length === 0 ? (
-          <p>Your cart is empty</p>
-        ) : (
-          updatedCart.map((item) => {
+      {updatedCart.length === 0 ? (
+        <p className="empty-cart">Your cart is empty</p>
+      ) : (
+        <div className="cart-items">
+          {updatedCart.map((item) => {
             const discount = item.price - item.discountedPrice;
             const discountPercentage = ((discount / item.price) * 100).toFixed(0);
 
@@ -72,9 +77,9 @@ function EditOrderPage({ cart, setCart }) {
                   )}
 
                   <div className="cart-controls">
-                    <button onClick={() => decreaseQuantity(item.id)}>-</button>
-                    <span>{item.quantity}</span>
-                    <button onClick={() => increaseQuantity(item.id)}>+</button>
+                    <button onClick={() => decreaseQuantity(item.id)} className="qty-btn">-</button>
+                    <span className="quantity">{item.quantity}</span>
+                    <button onClick={() => increaseQuantity(item.id)} className="qty-btn">+</button>
                     <button onClick={() => removeProduct(item.id)} className="remove-btn">
                       <FaTrash />
                     </button>
@@ -82,13 +87,15 @@ function EditOrderPage({ cart, setCart }) {
                 </div>
               </div>
             );
-          })
-        )}
-      </div>
-      <div className="cart-total">
-        <h3>Total: ${total.toFixed(2)}</h3>
-        <button className="save-btn" onClick={saveChanges}>Save Changes</button>
-      </div>
+          })}
+        </div>
+      )}
+      {updatedCart.length > 0 && (
+        <div className="cart-total">
+          <h3>Total: ${total.toFixed(2)}</h3>
+          <button className="save-btn" onClick={saveChanges}>Save Changes</button>
+        </div>
+      )}
     </div>
   );
 }

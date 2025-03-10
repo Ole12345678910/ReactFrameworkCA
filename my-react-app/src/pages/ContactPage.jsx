@@ -22,54 +22,54 @@ const ContactPage = () => {
 
   // Handle form submission
   const handleSubmit = (e) => {
-    e.preventDefault();  // Prevent the form from submitting automatically
+    e.preventDefault();  // Prevent page refresh
     
     const validationErrors = validateForm();
     setErrors(validationErrors);
 
-    // If there are no validation errors, proceed to checkout
     if (Object.keys(validationErrors).length === 0) {
-      console.log('Form data:', formData);  // Log the form data
-      setIsSuccess(true);  // Show success message
+      console.log('Form data:', formData);
+      setIsSuccess(true);
+      setTimeout(() => setIsSuccess(false), 4000); // Hide success message after 4 sec
       setFormData({
         fullName: '',
         subject: '',
         email: '',
         body: ''
-      });  // Clear the form fields after submission
+      });
     }
   };
 
   // Validation logic
   const validateForm = () => {
-    const errors = {};
+    const newErrors = {};
 
-    if (formData.fullName.length < 3) {
-      errors.fullName = 'Full Name must be at least 3 characters';
+    if (formData.fullName.trim().length < 3) {
+      newErrors.fullName = 'Full Name must be at least 3 characters';
     }
 
-    if (formData.subject.length < 3) {
-      errors.subject = 'Subject must be at least 3 characters';
+    if (formData.subject.trim().length < 3) {
+      newErrors.subject = 'Subject must be at least 3 characters';
     }
 
-    if (!/\S+@\S+\.\S+/.test(formData.email)) {
-      errors.email = 'Email is invalid';
+    if (!/^\S+@\S+\.\S+$/.test(formData.email)) {
+      newErrors.email = 'Please enter a valid email address';
     }
 
-    if (formData.body.length < 3) {
-      errors.body = 'Message must be at least 3 characters';
+    if (formData.body.trim().length < 10) {
+      newErrors.body = 'Message must be at least 10 characters';
     }
 
-    return errors;
+    return newErrors;
   };
 
   return (
     <div className="contact-page">
       <h1>Contact Us</h1>
 
-      {isSuccess && <p className="success-message">Your message has been sent successfully!</p>}
+      {isSuccess && <p className="success-message">✅ Your message has been sent successfully!</p>}
 
-      <form onSubmit={handleSubmit}>
+      <form onSubmit={handleSubmit} noValidate>
         <div className="form-group">
           <label htmlFor="fullName">Full Name</label>
           <input
@@ -78,6 +78,7 @@ const ContactPage = () => {
             name="fullName"
             value={formData.fullName}
             onChange={handleChange}
+            className={errors.fullName ? 'input-error' : ''}
           />
           {errors.fullName && <p className="error-message">{errors.fullName}</p>}
         </div>
@@ -90,6 +91,7 @@ const ContactPage = () => {
             name="subject"
             value={formData.subject}
             onChange={handleChange}
+            className={errors.subject ? 'input-error' : ''}
           />
           {errors.subject && <p className="error-message">{errors.subject}</p>}
         </div>
@@ -102,6 +104,7 @@ const ContactPage = () => {
             name="email"
             value={formData.email}
             onChange={handleChange}
+            className={errors.email ? 'input-error' : ''}
           />
           {errors.email && <p className="error-message">{errors.email}</p>}
         </div>
@@ -113,13 +116,12 @@ const ContactPage = () => {
             name="body"
             value={formData.body}
             onChange={handleChange}
+            className={errors.body ? 'input-error' : ''}
           ></textarea>
           {errors.body && <p className="error-message">{errors.body}</p>}
         </div>
 
-        <button type="submit" disabled={Object.keys(errors).length > 0}>
-          Submit
-        </button>
+        <button className='checkout-btn' type="submit">Submit</button>
       </form>
     </div>
   );
