@@ -8,4 +8,5 @@ export default defineConfig({
     host: '0.0.0.0', // Allow access from any device on the network
     port: 3000, // Ensure this is the correct port
   },
-})
+  base: '/', // Change this to '/myapp/' if deployed under a sub-path
+});
