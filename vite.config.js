@@ -1,11 +1,10 @@
-import { defineConfig } from 'vite'
-import react from '@vitejs/plugin-react'
+import { defineConfig } from 'vite';
+import react from '@vitejs/plugin-react';
 
-// https://vitejs.dev/config/
 export default defineConfig({
   plugins: [react()],
   build: {
-    outDir: 'dist', // Den mappen som byggede filer skal lagres i
+    outDir: 'dist',  // Ensure this is set to the 'dist' folder
   },
-  base: '/', // Dette er viktig for Netlify-deployering
-})
+  base: '/',  // Ensure this is set to '/'
+});
