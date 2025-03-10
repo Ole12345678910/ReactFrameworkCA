@@ -5,11 +5,7 @@ import react from '@vitejs/plugin-react'
 export default defineConfig({
   plugins: [react()],
   build: {
-    outDir: 'dist', // Output directory for build files
+    outDir: 'dist', // Build output directory
   },
-  server: {
-    host: '0.0.0.0',
-    port: 3000,
-  },
-  base: '/', // Ensure this is set to '/' for root deployment
+  base: '/', // Ensures the assets are referenced correctly when deployed
 })
