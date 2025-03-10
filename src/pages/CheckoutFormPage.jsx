@@ -2,9 +2,8 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 function CheckoutFormPage({ cart, handleCheckout }) {
-  const navigate = useNavigate(); // Use the navigate hook to navigate to a new page after successful checkout
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
-    // Initialize the formData state with default empty values
     fullName: "",
     email: "",
     address: "",
@@ -19,9 +18,8 @@ function CheckoutFormPage({ cart, handleCheckout }) {
     sameAddress: true,
   });
 
-  const [errors, setErrors] = useState({}); // Initialize errors state to track validation errors
+  const [errors, setErrors] = useState({});
 
-  // Handle changes in input fields and automatically trim values for text fields
   const handleInputChange = (e) => {
     const { name, value, type, checked } = e.target;
     setFormData((prev) => ({
@@ -30,7 +28,6 @@ function CheckoutFormPage({ cart, handleCheckout }) {
     }));
   };
 
-  // Define validation rules for each input field
   const validationRules = {
     fullName: { condition: (value) => value.length >= 3, message: "Full name must be at least 3 characters" },
     email: { condition: (value) => /\S+@\S+\.\S+/.test(value), message: "Invalid email address" },
@@ -44,111 +41,101 @@ function CheckoutFormPage({ cart, handleCheckout }) {
     cvv: { condition: (value) => /^\d{3}$/.test(value), message: "CVV must be 3 digits" },
   };
 
-  // Validate the form based on the validation rules
   const validateForm = () => {
     const newErrors = Object.entries(validationRules).reduce((acc, [field, { condition, message }]) => {
-      if (!condition(formData[field])) acc[field] = message; // If validation fails, add error message
+      if (!condition(formData[field])) acc[field] = message;
       return acc;
     }, {});
 
-    setErrors(newErrors); // Update errors state
-    return Object.keys(newErrors).length === 0; // Return true if no errors, false if there are errors
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
   };
 
-  // Handle the form submission
   const handleSubmit = (e) => {
-    e.preventDefault(); // Prevent the page from reloading when the form is submitted
+    e.preventDefault();
 
-    if (validateForm()) { // If form is valid
-      console.log("Checkout details:", formData); // Log form data for debugging purposes
-      navigate("/checkout-success"); // Navigate to the checkout success page
+    if (validateForm()) {
+      console.log("Checkout details:", formData);
+
+      localStorage.removeItem("cart"); // Clear cart from localStorage
+      handleCheckout(); // Reset cart state
+
+      navigate("/checkout-success"); // Navigate to success page
     }
   };
 
   return (
-    <>
-      <div className="checkout-container">
-        <div className="checkout-form-container">
-          <h2>Checkout</h2>
-          {/* Form starts here, with the submit button inside the form */}
-          <form onSubmit={handleSubmit}>
-            <div className="form-group">
-              <h3>Billing Address</h3>
-              {/* Loop over fields to render each input field with validation */}
-              {["fullName", "email", "address", "city"].map((field) => (
-                <div key={field}>
-                  <label>{field.replace(/([A-Z])/g, " $1")}</label> {/* Format field name for label */}
+    <div className="checkout-container">
+      <div className="checkout-form-container">
+        <h2>Checkout</h2>
+        <form onSubmit={handleSubmit}>
+          <div className="form-group">
+            <h3>Billing Address</h3>
+            {["fullName", "email", "address", "city"].map((field) => (
+              <div key={field}>
+                <label>{field.replace(/([A-Z])/g, " $1")}</label>
+                <input type="text" name={field} value={formData[field]} onChange={handleInputChange} required />
+                {errors[field] && <p className="error">{errors[field]}</p>}
+              </div>
+            ))}
+            <div className="row">
+              {["state", "zip"].map((field) => (
+                <div key={field} className="col-50">
+                  <label>{field.charAt(0).toUpperCase() + field.slice(1)}</label>
                   <input type="text" name={field} value={formData[field]} onChange={handleInputChange} required />
-                  {errors[field] && <p className="error">{errors[field]}</p>} {/* Display error if exists */}
+                  {errors[field] && <p className="error">{errors[field]}</p>}
                 </div>
               ))}
-
-              <div className="row">
-                {["state", "zip"].map((field) => (
-                  <div key={field} className="col-50">
-                    <label>{field.charAt(0).toUpperCase() + field.slice(1)}</label>
-                    <input type="text" name={field} value={formData[field]} onChange={handleInputChange} required />
-                    {errors[field] && <p className="error">{errors[field]}</p>} {/* Display error if exists */}
-                  </div>
-                ))}
-              </div>
             </div>
+          </div>
 
-            {/* Payment Section */}
-            <div className="form-group">
-              <h3>Payment</h3>
-              {/* Loop over payment fields to render each input field with validation */}
-              {["cardName", "cardNumber"].map((field) => (
-                <div key={field}>
+          <div className="form-group">
+            <h3>Payment</h3>
+            {["cardName", "cardNumber"].map((field) => (
+              <div key={field}>
+                <label>{field.replace(/([A-Z])/g, " $1")}</label>
+                <input type="text" name={field} value={formData[field]} onChange={handleInputChange} required />
+                {errors[field] && <p className="error">{errors[field]}</p>}
+              </div>
+            ))}
+            <div className="row">
+              {["expMonth", "expYear", "cvv"].map((field, index) => (
+                <div key={field} className={index === 2 ? "col-50" : "col-33"}>
                   <label>{field.replace(/([A-Z])/g, " $1")}</label>
                   <input type="text" name={field} value={formData[field]} onChange={handleInputChange} required />
-                  {errors[field] && <p className="error">{errors[field]}</p>} {/* Display error if exists */}
+                  {errors[field] && <p className="error">{errors[field]}</p>}
                 </div>
               ))}
-
-              <div className="row">
-                {["expMonth", "expYear", "cvv"].map((field, index) => (
-                  <div key={field} className={index === 2 ? "col-50" : "col-33"}>
-                    <label>{field.replace(/([A-Z])/g, " $1")}</label>
-                    <input type="text" name={field} value={formData[field]} onChange={handleInputChange} required />
-                    {errors[field] && <p className="error">{errors[field]}</p>} {/* Display error if exists */}
-                  </div>
-                ))}
-              </div>
             </div>
-            
-            {/* The submit button triggers form submission */}
-            <button type="submit" className="checkout-button">Complete Purchase</button>
-          </form>
-        </div>
+          </div>
 
-        {/* Cart summary showing items, original price, discounts, etc. */}
-        <div className="cart-summary">
-          <h4>Cart Summary</h4>
-          {cart.map((item, index) => {
-            const savedPerItem = item.price - item.discountedPrice;
-            const discountPercentage = ((savedPerItem / item.price) * 100).toFixed(0);
-
-            return (
-              <p key={index}>
-                {item.title} <span></span>
-                <span className="original-price">${item.price.toFixed(2)}</span> →  
-                <span className="discounted-price"> ${item.discountedPrice.toFixed(2)}</span>  
-                <span className="discount-badge">-{discountPercentage}%</span>
-              </p>
-            );
-          })}
-          <hr />
-          <p><strong>Total Items:</strong> {cart.reduce((total, item) => total + item.quantity, 0)}</p>
-          <p><strong>Original Price:</strong> ${cart.reduce((total, item) => total + item.price * item.quantity, 0).toFixed(2)}</p>
-          <p><strong>Saved:</strong> <span className="total-saved">-${cart.reduce((total, item) => total + (item.price - item.discountedPrice) * item.quantity, 0).toFixed(2)}</span></p>
-          <p><strong>Final Total:</strong> <span className="total-price">${cart.reduce((total, item) => total + item.discountedPrice * item.quantity, 0).toFixed(2)}</span></p>
-        </div>
+          <button type="submit" className="checkout-button">Complete Purchase</button>
+        </form>
       </div>
-    </>
+
+      <div className="cart-summary">
+        <h4>Cart Summary</h4>
+        {cart.map((item, index) => {
+          const savedPerItem = item.price - item.discountedPrice;
+          const discountPercentage = ((savedPerItem / item.price) * 100).toFixed(0);
+
+          return (
+            <p key={index}>
+              {item.title} <span></span>
+              <span className="original-price">${item.price.toFixed(2)}</span> →  
+              <span className="discounted-price"> ${item.discountedPrice.toFixed(2)}</span>  
+              <span className="discount-badge">-{discountPercentage}%</span>
+            </p>
+          );
+        })}
+        <hr />
+        <p><strong>Total Items:</strong> {cart.reduce((total, item) => total + item.quantity, 0)}</p>
+        <p><strong>Original Price:</strong> ${cart.reduce((total, item) => total + item.price * item.quantity, 0).toFixed(2)}</p>
+        <p><strong>Saved:</strong> <span className="total-saved">-${cart.reduce((total, item) => total + (item.price - item.discountedPrice) * item.quantity, 0).toFixed(2)}</span></p>
+        <p><strong>Final Total:</strong> <span className="total-price">${cart.reduce((total, item) => total + item.discountedPrice * item.quantity, 0).toFixed(2)}</span></p>
+      </div>
+    </div>
   );
 }
 
 export default CheckoutFormPage;
-
-

@@ -1,6 +1,0 @@
-npm install react-router-dom
-
-npm install vite@latest
-
-
-npm install react-icons
