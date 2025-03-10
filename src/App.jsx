@@ -83,9 +83,6 @@ function App() {
 
   return (
     <Layout cart={cart} toggleCart={toggleCart}>
-            <div>
-        <img src="/vite.png" alt="Vite logo" style={{ width: '100px', height: 'auto' }} />
-      </div>
       {location.pathname === "/" && <SearchBar onSearch={setSearchTerm} />}
 
       {/* Cart Sidebar (conditionally rendered) */}
