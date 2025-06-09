@@ -1,6 +1,6 @@
 # React Framework CA – Product Shop 🛒
 
-A responsive, dynamic product store built with **React**, styled using **Tailwind CSS**, and powered by custom React hooks. This application features cart functionality, product detail pages, form validation, and a clean UI layout optimized for user experience.
+A responsive, dynamic product store built with **React**, styled using **Plain CSS (written in `index.css`)**, and powered by custom React hooks. This application features cart functionality, product detail pages, form validation, and a clean UI layout optimized for user experience.
 
 🌐 **Live Site:** https://react-ca.netlify.app/
 
