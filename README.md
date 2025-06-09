@@ -2,7 +2,7 @@
 
 A responsive, dynamic product store built with **React**, styled using **Tailwind CSS**, and powered by custom React hooks. This application features cart functionality, product detail pages, form validation, and a clean UI layout optimized for user experience.
 
-🌐 **Live Site:** [https://your-site.netlify.app](https://react-ca.netlify.app/)
+🌐 **Live Site:** https://react-ca.netlify.app/
 
 ---
 
